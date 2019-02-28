@@ -1,7 +1,8 @@
-class Slide {
-    var photo1: Photo? = null
-    var photo2: Photo? = null
+class Slide(var photo1: Photo?, var photo2: Photo?) {
+
     var peso: Int = 0
+    var checked = false
+
     val tags: HashSet<String>?
         get() {
             var finalTags: HashSet<String>? = null
