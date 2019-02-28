@@ -5,6 +5,8 @@ public class Photo {
     int id;
     String orientation;
     HashSet<String> tags;
+    boolean checked = false;
+    boolean finalChecked = false;
 
     public Photo(int id, String orientation, HashSet<String> tags) {
         this.id = id;

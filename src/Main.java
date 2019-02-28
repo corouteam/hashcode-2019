@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +12,12 @@ public class Main {
 
     void init() throws IOException {
         System.out.println("Hashcode 2019!");
-        ArrayList<Photo> photos = parseFile("d_pet_pictures.txt");
+        ArrayList<Photo> photos = parseFile("c_memorable_moments.txt");
 
         ArrayList<Slide> slides = new ArrayList<>();
+        ArrayList<Slide> newSlides = new ArrayList<>();
+
+
 
         for (Photo photo : photos) {
             if (photo.orientation.equals("H")) {
@@ -27,12 +31,28 @@ public class Main {
         orderedSlides.add(slides.get(0));
         slides.get(0).setChecked(true);
 
+        ArrayList<Photo> verticalPhotos = new ArrayList<>();
+        for (Photo photo: photos) {
+            if (photo.orientation.equals("V")) {
+                verticalPhotos.add(photo);
+            }
+
+        }
+
+        System.out.println(verticalPhotos.size());
+
 
         for (int i=0; i<slides.size()-1; i++) {
             Slide currentSlide = orderedSlides.get(i);
-            Slide nextSlide = ScoreCalculator.Companion.getHighest(currentSlide, slides);
+            Slide nextSlide = ScoreCalculator.Companion.bestCompleteFit(currentSlide,verticalPhotos, slides);
             nextSlide.setChecked(true);
             orderedSlides.add(nextSlide);
+
+            for (Photo photo:
+                 photos) {
+                photo.checked = photo.finalChecked;
+
+            }
         }
 
         for (Slide slide: slides) {

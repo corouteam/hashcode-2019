@@ -5,6 +5,53 @@ import kotlin.math.min
 class ScoreCalculator {
 
     companion object {
+
+        //per favo4re passami solo quelle verticali
+        fun accocchio(ref: Slide, photos: ArrayList<Photo>): Slide{
+            var notCheckedPhotos = photos.filter { !it.checked }
+            var firstPhoto = bestFit(ref, notCheckedPhotos as ArrayList<Photo>)
+            //togli la prima foto
+            firstPhoto.checked = true
+            return bestSecondFit(ref, photos, firstPhoto)
+
+
+        }
+
+        fun bestCompleteFit(ref: Slide, photos: ArrayList<Photo>, slides: ArrayList<Slide> ): Slide{
+            var bestV = accocchio(ref, photos)
+            var bestH = getHighest(ref,slides)
+            if(bestH.peso > bestV.peso){
+                return bestH
+            }else{
+                bestV.photo1!!.finalChecked = true
+                bestV.photo2!!.finalChecked = true
+                return bestV
+            }
+        }
+
+        fun bestFit(ref: Slide, photos: ArrayList<Photo>): Photo{
+            var notCheckedPhotos = photos.filter { !it.checked }
+            var firstPhoto: Photo
+            var tempSlides = ArrayList<Slide>()
+            notCheckedPhotos.forEach {
+                var slide = Slide(it, null)
+                tempSlides.add(slide)
+            }
+            return getHighest(ref, tempSlides).photo1!!
+        }
+
+        fun bestSecondFit(ref: Slide, photos: ArrayList<Photo>, photo1: Photo): Slide{
+            var firstPhoto: Photo
+            var notCheckedPhotos = photos.filter { !it.checked }
+
+            var tempSlides = ArrayList<Slide>()
+            notCheckedPhotos.forEach {
+                var slide = Slide(it, photo1)
+                tempSlides.add(slide)
+            }
+            return getHighest(ref, tempSlides)!!
+        }
+
         fun getHighest(ref: Slide, slides: ArrayList<Slide>): Slide{
             val notCheckedSlides = slides.filter { (!it.checked) }
 
