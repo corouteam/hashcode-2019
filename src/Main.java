@@ -12,7 +12,7 @@ public class Main {
     void init() throws IOException {
         System.out.println("Hashcode 2019!");
         ParseFile("a_example.txt");
-
+        
 
     }
 
