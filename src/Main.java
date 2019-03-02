@@ -5,57 +5,58 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Main {
-
+    String a = "a_example.txt";
+    String b = "b_lovely_landscapes.txt";
+    String c = "c_memorable_moments.txt";
+    String d = "d_pet_pictures.txt";
     public static void main(String[] Args) throws IOException {
         new Main().init();
     }
 
     void init() throws IOException {
         System.out.println("Hashcode 2019!");
-        ArrayList<Photo> photos = parseFile("c_memorable_moments.txt");
-
-        ArrayList<Slide> slides = new ArrayList<>();
+        ArrayList<Photo> photos = parseFile(b);
+        ArrayList<Slide> hSlides = new ArrayList<>();
         ArrayList<Slide> newSlides = new ArrayList<>();
-
-
+        ArrayList<Slide> orderedSlides = new ArrayList<>();
+        ArrayList<Photo> verticalPhotos = new ArrayList<>();
 
         for (Photo photo : photos) {
             if (photo.orientation.equals("H")) {
-                slides.add(new Slide(photo, null));
-            }
-        }
-
-        ArrayList<Slide> orderedSlides = new ArrayList<>();
-
-        // First one is random
-        orderedSlides.add(slides.get(0));
-        slides.get(0).setChecked(true);
-
-        ArrayList<Photo> verticalPhotos = new ArrayList<>();
-        for (Photo photo: photos) {
-            if (photo.orientation.equals("V")) {
+                hSlides.add(new Slide(photo, null));
+            }else{
                 verticalPhotos.add(photo);
             }
-
         }
+        int maxDimention = hSlides.size() + (verticalPhotos.size()/2); //-1 per precauzione, lo possiamo togliere dopo
 
-        System.out.println(verticalPhotos.size());
+        //se le verticali sono dispari tolgi il primo
+        if(verticalPhotos.size()%2 != 0){
+            verticalPhotos.remove(0);
+        }
+        ScoreSystem scoreSystem = new ScoreSystem(verticalPhotos, hSlides);
 
 
-        for (int i=0; i<slides.size()-1; i++) {
+                // First one is random
+        orderedSlides.add(hSlides.get(0));
+        hSlides.get(0).setChecked(true);
+        scoreSystem.remove(hSlides.get(0));
+        System.out.println("H Photos: "+hSlides.size());
+        System.out.println("V Photos: "+verticalPhotos.size());
+        System.out.println("max c: "+maxDimention);
+
+        int maxdimen = 10000;
+        for (int i=0; i<maxdimen; i++) {
+            System.out.println("int: "+i);
             Slide currentSlide = orderedSlides.get(i);
-            Slide nextSlide = ScoreCalculator.Companion.bestCompleteFit(currentSlide,verticalPhotos, slides);
-            nextSlide.setChecked(true);
+            Slide nextSlide = scoreSystem.bestCompleteFit(currentSlide);
+            scoreSystem.remove(nextSlide);
+           // nextSlide.setChecked(true);
             orderedSlides.add(nextSlide);
 
-            for (Photo photo:
-                 photos) {
-                photo.checked = photo.finalChecked;
-
-            }
         }
 
-        for (Slide slide: slides) {
+        for (Slide slide: hSlides) {
             if (!slide.getChecked()) {
                 orderedSlides.add(slide);
                 break;
@@ -63,6 +64,7 @@ public class Main {
         }
 
         OutputGenerator.Companion.generateOutput(orderedSlides);
+        System.out.println("ended");
     }
 
 
